@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    h1 #{movie.name}
+
+    p
+        a(href='/movies') Back to everyone
+
+    if following.length
+        p #{movie.name} is following #{following.length} movies:
+        // TODO should say 'movie' if only one! ;)
+        ul.movies
+            for other in following
+                li.movie
+                    form(action='/movies/#{movie.id}/unfollow', method='POST')
+                        a(href='/movies/#{other.id}') #{other.name}
+                        input(type='hidden', name='movie[id]', value='#{other.id}')
+                        input(type='submit', class='unfollow', value='x')
+    else
+        p #{movie.name} isn't following anyone currently.
+
+    if others.length
+        form(action='/movies/#{movie.id}/follow', method='POST')
+            p Add someone for #{movie.name} to follow:
+            label
+                select(name='movie[id]', required)
+                    option(value='')
+                    for movie in others
+                        option(value='#{movie.id}') #{movie.name}
+            input(type='submit', value='Follow')
+    else
+        p There's no one else left for #{movie.name} to follow!
+
+    form(action='/movies/#{movie.id}', method='POST')
+        p Edit this movie:
+        input(type='text', name='name', placeholder='#{movie.name}', required)
+        input(type='submit', value='Update')
+
+    form(action='/movies/#{movie.id}', method='POST', onsubmit='return confirm("Are you sure?");')
+        p And if you're feeling destructive…
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete Movie')

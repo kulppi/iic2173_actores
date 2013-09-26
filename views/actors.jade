@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h1 Actors
+
+    if actors.length
+        p Here are the current actors:
+        ul.actors
+            for actor in actors
+                li.actor
+                    a(href='/actors/#{actor.id}') #{actor.name}
+    else
+        p There are no actors currently.
+
+    form(action='', method='POST')
+        p Create a new actor:
+        input(type='text', name='name', placeholder='Name', required)
+        input(type='submit', value='Create')

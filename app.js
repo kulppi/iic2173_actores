@@ -34,14 +34,20 @@ app.locals({
 
 app.get('/', routes.site.index);
 
-app.get('/users', routes.users.list);
-app.post('/users', routes.users.create);
-app.get('/users/:id', routes.users.show);
-app.post('/users/:id', routes.users.edit);
-app.del('/users/:id', routes.users.del);
+app.get('/actors', routes.actors.list);
+app.post('/actors', routes.actors.create);
+app.get('/actors/:id', routes.actors.show);
+app.post('/actors/:id', routes.actors.edit);
+app.del('/actors/:id', routes.actors.del);
 
-app.post('/users/:id/follow', routes.users.follow);
-app.post('/users/:id/unfollow', routes.users.unfollow);
+app.post('/actors/:id/follow', routes.actors.follow);
+app.post('/actors/:id/unfollow', routes.actors.unfollow);
+
+app.get('/movies', routes.movies.list);
+app.post('/movies', routes.movies.create);
+app.get('/movies/:id', routes.movies.show);
+app.post('/movies/:id', routes.movies.edit);
+app.del('/movies/:id', routes.movies.del);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

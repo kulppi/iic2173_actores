@@ -3,7 +3,7 @@
 This is a template app showing the use of [Neo4j][] from Node.js. It uses the
 [node-neo4j][] library, available on npm as `neo4j`.
 
-The app is a simple social network manager: it lets you add and remove users
+The app is a simple social network manager: it lets you add and remove actors
 and "follows" relationships between them.
 
 This app supports deploying to Heroku, and a demo is in fact running live at

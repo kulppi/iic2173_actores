@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    h1 #{actor.name}
+
+    p
+        a(href='/actors') Back to everyone
+
+    if following.length
+        p #{actor.name} is following #{following.length} actors:
+        // TODO should say 'actor' if only one! ;)
+        ul.actors
+            for other in following
+                li.actor
+                    form(action='/actors/#{actor.id}/unfollow', method='POST')
+                        a(href='/actors/#{other.id}') #{other.name}
+                        input(type='hidden', name='actor[id]', value='#{other.id}')
+                        input(type='submit', class='unfollow', value='x')
+    else
+        p #{actor.name} isn't following anyone currently.
+
+    if others.length
+        form(action='/actors/#{actor.id}/follow', method='POST')
+            p Add someone for #{actor.name} to follow:
+            label
+                select(name='actor[id]', required)
+                    option(value='')
+                    for actor in others
+                        option(value='#{actor.id}') #{actor.name}
+            input(type='submit', value='Follow')
+    else
+        p There's no one else left for #{actor.name} to follow!
+
+    form(action='/actors/#{actor.id}', method='POST')
+        p Edit this actor:
+        input(type='text', name='name', placeholder='#{actor.name}', required)
+        input(type='submit', value='Update')
+
+    form(action='/actors/#{actor.id}', method='POST', onsubmit='return confirm("Are you sure?");')
+        p And if you're feeling destructive…
+        input(type='hidden', name='_method', value='DELETE')
+        input(type='submit', value='Delete Actor')
