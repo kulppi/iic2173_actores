@@ -1,16 +1,13 @@
-# Node-Neo4j Template
+# Node-Neo4j Bacon calculator
 
-This is a template app showing the use of [Neo4j][] from Node.js. It uses the
-[node-neo4j][] library, available on npm as `neo4j`.
+This is a bacon calculator app using actors and movies as nodes. It uses the
+[node-neo4j][] library, available on npm as `neo4j` and Node.js.
 
-The app is a simple social network manager: it lets you add and remove actors
-and "follows" relationships between them.
+The app is a simple social network manager: it lets you add and remove actors, movies and
+ "Acts" relationships between them.
 
-This app supports deploying to Heroku, and a demo is in fact running live at
-[http://node-neo4j-template.herokuapp.com/](http://node-neo4j-template.herokuapp.com/).
-
-So try it out, browse the code, and fork this project to get a head start on
-creating your own Node-Neo4j app. Enjoy!
+This app supports deploying to DCC server system, and a demo is in fact running live at
+[http://arqui3.ing.puc.cl/](http://arqui3.ing.puc.cl/).
 
 
 ## Installation
@@ -34,25 +31,22 @@ ln -s neo4j-community-1.8.2/bin/neo4j neo4j
 ./neo4j start
 
 # Run the app!
-npm start
+node app
 ```
 
 The app will now be accessible at [http://localhost:3000/](http://localhost:3000/).
 
 The UI is admittedly quite crappy, but hopefully it shows the functionality.
-(Anyway, this project is really about the code! =P)
+This will be working only by API (TODO)
 
 
 ## Miscellany
 
 - MIT license.
 - Questions/comments/etc. are welcome.
-- As an exercise, I built this without using [CoffeeScript][coffeescript] or
-  [Streamline][streamline]. What a gigantic pain! Never again. =P
 
 
 [Neo4j]: http://www.neo4j.org/
 [node-neo4j]: https://github.com/thingdom/node-neo4j
 
 [coffeescript]: http://www.coffeescript.org/
-[streamline]: https://github.com/Sage/streamlinejs
