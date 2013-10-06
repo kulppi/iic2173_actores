@@ -79,13 +79,13 @@ exports.del = function (req, res, next) {
  * POST /actors/:id/follow
  */
 exports.hire = function (req, res, next) {
-    Actor.get(req.params.id, function (err, actor) {
+    Movie.get(req.params.id, function (err, movie) {
         if (err) return next(err);
-        Movie.get(req.body.movie.id, function (err, other) {
+        Actor.get(req.body.actor.id, function (err, actor) {
             if (err) return next(err);
-            actor.acts(other, function (err) {
+            actor.acts(movie, function (err) {
                 if (err) return next(err);
-                res.redirect('/actors/' + actor.id);
+                res.redirect('/movies/' + movie.id);
             });
         });
     });
@@ -95,13 +95,13 @@ exports.hire = function (req, res, next) {
  * POST /actors/:id/unfollow
  */
 exports.kickout = function (req, res, next) {
-   Actor.get(req.params.id, function (err, actor) {
+    Movie.get(req.params.id, function (err, movie) {
         if (err) return next(err);
-        Movie.get(req.body.movie.id, function (err, other) {
+        Actor.get(req.body.actor.id, function (err, actor) {
             if (err) return next(err);
-            actor.kickout(other, function (err) {
+            actor.kickout(movie, function (err) {
                 if (err) return next(err);
-                res.redirect('/actors/' + actor.id);
+                res.redirect('/movies/' + movie.id);
             });
         });
     });

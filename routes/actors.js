@@ -35,16 +35,40 @@ exports.show = function (req, res, next) {
     Actor.get(req.params.id, function (err, actor) {
         if (err) return next(err);
         // TODO also fetch and show followers? (not just follow*ing*)
-        actor.getMoviesAndOthers(function (err, movies, others) {
-            if (err) return next(err);
-            res.render('actor', {
-                actor: actor,
-                movies: movies,
-                others: others
+        Actor.getAll(function (err, actors) {
+            actor.getMoviesAndOthers(function (err, movies, others) {
+                if (err) return next(err);
+                res.render('actor', {
+                    actor: actor,
+                    actors: actors,
+                    movies: movies,
+                    others: others
+                });
             });
         });
     });
 };
+
+/**
+ * GET /actors/:id/bacon
+ */
+exports.bacon = function (req, res, next) {
+    Actor.get(req.params.id, function (err, actor) {
+        if (err) return next(err);
+        Actor.get(req.body.actor.id, function (err, other) {
+            actor.shortestPath(other, function (err, bacon) {
+                if (err) return next(err);
+                res.render('bacon', {
+                    actor: actor,
+                    other: other,
+                    bacon: bacon
+                });                    
+            });
+        });
+    });
+};
+
+
 
 /**
  * POST /actors/:id

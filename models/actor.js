@@ -136,6 +136,29 @@ Actor.prototype.getMoviesAndOthers = function (callback) {
     });
 };
 
+
+// calls callback w/ (err, movies, others) where movies is an array of
+// movies this actor has acted, and others is all other movies where he has not.
+Actor.prototype.shortestPath = function (other, callback) {
+    // query all actors and whether we follow each one or not:
+    var query = [
+        'START actor=node({actorId}), other=node({otherId})',
+        'MATCH  p = shortestPath((other)-[*..16]-(actor)) ',
+        'RETURN p'  // COUNT(rel) is a hack for 1 or 0
+    ].join('\n')
+
+    var params = {
+        actorId: this.id,
+        otherId: other.id,
+    };
+
+    db.query(query, params, function (err, results) {
+        if (err) return callback(err);
+        var length = results[0].p._length/2;
+        callback(null, length);
+    });
+};
+
 // static methods:
 
 Actor.get = function (id, callback) {

@@ -42,12 +42,17 @@ app.del('/actors/:id', routes.actors.del);
 
 app.post('/actors/:id/hire', routes.actors.hire);
 app.post('/actors/:id/kickout', routes.actors.kickout);
+app.post('/actors/:id/bacon', routes.actors.bacon);
 
 app.get('/movies', routes.movies.list);
 app.post('/movies', routes.movies.create);
 app.get('/movies/:id', routes.movies.show);
 app.post('/movies/:id', routes.movies.edit);
 app.del('/movies/:id', routes.movies.del);
+
+
+app.post('/movies/:id/hire', routes.movies.hire);
+app.post('/movies/:id/kickout', routes.movies.kickout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

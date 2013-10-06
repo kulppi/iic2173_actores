@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    h1 Bacon Calculation
+    h3 
+        | Bacon between 
+        a(href='/actors/#{actor.id}') #{actor.name} 
+        | and 
+        a(href='/actors/#{other.id}') #{other.name} 
+        | is #{bacon}
+        .
+
+    p
+        a(href='/actors') Back to everyone

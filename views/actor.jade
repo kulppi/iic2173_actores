@@ -3,8 +3,13 @@ extends layout
 block content
     h1 #{actor.name}
 
-    p
-        a(href='/actors') Back to everyone
+    form(action='/actors/#{actor.id}/bacon', method='POST')
+        p Calculate Bacon 
+            select(name='actor[id]', required)
+                option(value='')
+                for a in actors
+                    option(value='#{a.id}') #{a.name}
+        input(type='submit', value='Bacon Actor')
 
     if movies.length
         p #{actor.name} acts in #{movies.length} movies:
