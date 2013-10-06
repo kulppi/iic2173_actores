@@ -154,7 +154,7 @@ Actor.prototype.shortestPath = function (other, callback) {
 
     db.query(query, params, function (err, results) {
         if (err) return callback(err);
-        var length = results[0].p._length/2;
+        var length = results[0] == null ? "infinity" : results[0].p._length/2;
         callback(null, length);
     });
 };
