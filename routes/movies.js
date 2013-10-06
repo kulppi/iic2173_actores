@@ -2,6 +2,7 @@
 // movies.js
 // Routes to CRUD movies.
 
+var Actor = require('../models/actor');
 var Movie = require('../models/movie');
 
 /**
@@ -35,11 +36,11 @@ exports.show = function (req, res, next) {
     Movie.get(req.params.id, function (err, movie) {
         if (err) return next(err);
         // TODO also fetch and show followers? (not just follow*ing*)
-        movie.getFollowingAndOthers(function (err, following, others) {
+        movie.getActorsAndOthers( Actor, function (err, actors, others) {
             if (err) return next(err);
             res.render('movie', {
                 movie: movie,
-                following: following,
+                actors: actors,
                 others: others
             });
         });
@@ -73,3 +74,35 @@ exports.del = function (req, res, next) {
     });
 };
 
+
+/**
+ * POST /actors/:id/follow
+ */
+exports.hire = function (req, res, next) {
+    Actor.get(req.params.id, function (err, actor) {
+        if (err) return next(err);
+        Movie.get(req.body.movie.id, function (err, other) {
+            if (err) return next(err);
+            actor.acts(other, function (err) {
+                if (err) return next(err);
+                res.redirect('/actors/' + actor.id);
+            });
+        });
+    });
+};
+
+/**
+ * POST /actors/:id/unfollow
+ */
+exports.kickout = function (req, res, next) {
+   Actor.get(req.params.id, function (err, actor) {
+        if (err) return next(err);
+        Movie.get(req.body.movie.id, function (err, other) {
+            if (err) return next(err);
+            actor.kickout(other, function (err) {
+                if (err) return next(err);
+                res.redirect('/actors/' + actor.id);
+            });
+        });
+    });
+};

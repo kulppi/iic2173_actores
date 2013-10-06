@@ -1,6 +1,7 @@
 // actor.js
 // Actor model logic.
 
+var Movie = require('../models/movie');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(process.env.NEO4J_URL || 'http://localhost:7474');
 
@@ -10,6 +11,7 @@ var db = new neo4j.GraphDatabase(process.env.NEO4J_URL || 'http://localhost:7474
 var INDEX_NAME = 'nodes';
 var INDEX_KEY = 'type';
 var INDEX_VAL = 'actor';
+var INDEX_VAL_MOVIE = 'movie';
 
 var _REL = 'acts';
 
@@ -76,13 +78,13 @@ Actor.prototype.del = function (callback) {
     }, true);   // true = yes, force it (delete all relationships)
 };
 
-Actor.prototype.follow = function (other, callback) {
-    this._node.createRelationshipTo(other._node, 'follows', {}, function (err, rel) {
+Actor.prototype.acts = function (other, callback) {
+    this._node.createRelationshipTo(other._node, 'acts', {}, function (err, rel) {
         callback(err);
     });
 };
 
-Actor.prototype.unfollow = function (other, callback) {
+Actor.prototype.kickout = function (other, callback) {
     this._getFollowingRel(other, function (err, rel) {
         if (err) return callback(err);
         if (!rel) return callback(null);
@@ -92,9 +94,9 @@ Actor.prototype.unfollow = function (other, callback) {
     });
 };
 
-// calls callback w/ (err, following, others) where following is an array of
-// actors this actor follows, and others is all other actors minus him/herself.
-Actor.prototype.getFollowingAndOthers = function (callback) {
+// calls callback w/ (err, movies, others) where movies is an array of
+// movies this actor has acted, and others is all other movies where he has not.
+Actor.prototype.getMoviesAndOthers = function (callback) {
     // query all actors and whether we follow each one or not:
     var query = [
         'START actor=node({actorId}), other=node:INDEX_NAME(INDEX_KEY="INDEX_VAL")',
@@ -103,7 +105,7 @@ Actor.prototype.getFollowingAndOthers = function (callback) {
     ].join('\n')
         .replace('INDEX_NAME', INDEX_NAME)
         .replace('INDEX_KEY', INDEX_KEY)
-        .replace('INDEX_VAL', INDEX_VAL)
+        .replace('INDEX_VAL', INDEX_VAL_MOVIE)
         .replace('_REL', _REL);
 
     var params = {
@@ -114,23 +116,23 @@ Actor.prototype.getFollowingAndOthers = function (callback) {
     db.query(query, params, function (err, results) {
         if (err) return callback(err);
 
-        var following = [];
+        var movies = [];
         var others = [];
 
         for (var i = 0; i < results.length; i++) {
-            var other = new Actor(results[i]['other']);
-            var follows = results[i]['COUNT(rel)'];
+            var other = new Movie(results[i]['other']);
+            var acts = results[i]['COUNT(rel)'];
 
             if (actor.id === other.id) {
                 continue;
-            } else if (follows) {
-                following.push(other);
+            } else if (acts) {
+                movies.push(other);
             } else {
                 others.push(other);
             }
         }
 
-        callback(null, following, others);
+        callback(null, movies, others);
     });
 };
 

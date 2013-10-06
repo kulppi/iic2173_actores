@@ -1,6 +1,8 @@
 // movie.js
 // Movie model logic.
 
+
+//var Actor = require('../models/actor');
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(process.env.NEO4J_URL || 'http://localhost:7474');
 
@@ -9,6 +11,7 @@ var db = new neo4j.GraphDatabase(process.env.NEO4J_URL || 'http://localhost:7474
 
 var INDEX_NAME = 'nodes';
 var INDEX_KEY = 'type';
+var INDEX_VAL = 'actor';
 var INDEX_VAL_MOVIE = 'movie';
 
 var _REL = 'acts';
@@ -75,14 +78,13 @@ Movie.prototype.del = function (callback) {
         callback(err);
     }, true);   // true = yes, force it (delete all relationships)
 };
-
-Movie.prototype.follow = function (other, callback) {
-    this._node.createRelationshipTo(other._node, 'follows', {}, function (err, rel) {
+Movie.prototype.acts = function (other, callback) {
+    this._node.createRelationshipTo(other._node, 'acts', {}, function (err, rel) {
         callback(err);
     });
 };
 
-Movie.prototype.unfollow = function (other, callback) {
+Movie.prototype.kickout = function (other, callback) {
     this._getFollowingRel(other, function (err, rel) {
         if (err) return callback(err);
         if (!rel) return callback(null);
@@ -92,18 +94,18 @@ Movie.prototype.unfollow = function (other, callback) {
     });
 };
 
-// calls callback w/ (err, following, others) where following is an array of
-// movies this movie follows, and others is all other movies minus him/herself.
-Movie.prototype.getFollowingAndOthers = function (callback) {
-    // query all movies and whether we follow each one or not:
+// calls callback w/ (err, actors, others) where movies is an array of
+// movies this actor has acted, and others is all other movies where he has not.
+Movie.prototype.getActorsAndOthers = function (Actor, callback) {
+    // query all actors and whether we follow each one or not:
     var query = [
-        'START movie=node({movieId}), other=node:INDEX_NAME(INDEX_KEY="INDEX_VAL_MOVIE")',
-        'MATCH (movie) -[rel?:_REL]-> (other)',
+        'START movie=node({movieId}), other=node:INDEX_NAME(INDEX_KEY="INDEX_VAL")',
+        'MATCH (other) -[rel?:_REL]-> (movie)',
         'RETURN other, COUNT(rel)'  // COUNT(rel) is a hack for 1 or 0
     ].join('\n')
         .replace('INDEX_NAME', INDEX_NAME)
         .replace('INDEX_KEY', INDEX_KEY)
-        .replace('INDEX_VAL_MOVIE', INDEX_VAL_MOVIE)
+        .replace('INDEX_VAL', INDEX_VAL)
         .replace('_REL', _REL);
 
     var params = {
@@ -114,25 +116,26 @@ Movie.prototype.getFollowingAndOthers = function (callback) {
     db.query(query, params, function (err, results) {
         if (err) return callback(err);
 
-        var following = [];
+        var actors = [];
         var others = [];
 
         for (var i = 0; i < results.length; i++) {
-            var other = new Movie(results[i]['other']);
-            var follows = results[i]['COUNT(rel)'];
+            var other = new Actor(results[i]['other']);
+            var acts = results[i]['COUNT(rel)'];
 
             if (movie.id === other.id) {
                 continue;
-            } else if (follows) {
-                following.push(other);
+            } else if (acts) {
+                actors.push(other);
             } else {
                 others.push(other);
             }
         }
 
-        callback(null, following, others);
+        callback(null, actors, others);
     });
 };
+
 
 // static methods:
 

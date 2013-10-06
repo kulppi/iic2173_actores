@@ -40,8 +40,8 @@ app.get('/actors/:id', routes.actors.show);
 app.post('/actors/:id', routes.actors.edit);
 app.del('/actors/:id', routes.actors.del);
 
-app.post('/actors/:id/follow', routes.actors.follow);
-app.post('/actors/:id/unfollow', routes.actors.unfollow);
+app.post('/actors/:id/hire', routes.actors.hire);
+app.post('/actors/:id/kickout', routes.actors.kickout);
 
 app.get('/movies', routes.movies.list);
 app.post('/movies', routes.movies.create);
