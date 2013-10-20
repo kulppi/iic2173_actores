@@ -12,6 +12,7 @@ var INDEX_NAME = 'nodes';
 var INDEX_KEY = 'type';
 var INDEX_VAL = 'actor';
 var INDEX_VAL_MOVIE = 'movie';
+var BACON_INDEX_NAME = "bacon_name"
 
 var _REL = 'acts';
 
@@ -42,6 +43,15 @@ Object.defineProperty(Actor.prototype, 'name', {
     }
 });
 
+Object.defineProperty(Actor.prototype, 'provider_id', {
+    get: function () {
+        return this._node.data['provider_id'];
+    },
+    set: function (provider_id) {
+        this._node.data['provider_id'] = provider_id;
+    }
+});
+
 // private instance methods:
 
 Actor.prototype._getFollowingRel = function (other, callback) {
@@ -69,6 +79,17 @@ Actor.prototype._getFollowingRel = function (other, callback) {
 Actor.prototype.save = function (callback) {
     this._node.save(function (err) {
         callback(err);
+    });
+
+    this._node.index(BACON_INDEX_NAME, "name", this.name, function (err) {
+        if (err) return callback(err);
+        callback(null, this);
+    });
+    
+    if(this.provider_id != null)
+    this._node.index(BACON_INDEX_NAME, "provider_id", this.provider_id, function (err) {
+        if (err) return callback(err);
+        callback(null, this);
     });
 };
 
@@ -168,6 +189,13 @@ Actor.get = function (id, callback) {
     });
 };
 
+Actor.getBy = function (property, value, callback) {
+    db.getIndexedNode(BACON_INDEX_NAME, property, value, function (err, node) {
+        if (err) return callback(err);
+        callback(null, new Actor(node));
+    });
+};
+
 Actor.getAll = function (callback) {
     db.getIndexedNodes(INDEX_NAME, INDEX_KEY, INDEX_VAL, function (err, nodes) {
         // if (err) return callback(err);
@@ -188,6 +216,15 @@ Actor.create = function (data, callback) {
     node.save(function (err) {
         if (err) return callback(err);
         node.index(INDEX_NAME, INDEX_KEY, INDEX_VAL, function (err) {
+            if (err) return callback(err);
+            callback(null, actor);
+        });
+        node.index(BACON_INDEX_NAME, "name", actor.name, function (err) {
+            if (err) return callback(err);
+            callback(null, actor);
+        });
+        if(actor.provider_id != null)
+        node.index(BACON_INDEX_NAME, "provider_id", actor.provider_id, function (err) {
             if (err) return callback(err);
             callback(null, actor);
         });

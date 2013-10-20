@@ -54,6 +54,14 @@ app.del('/movies/:id', routes.movies.del);
 app.post('/movies/:id/hire', routes.movies.hire);
 app.post('/movies/:id/kickout', routes.movies.kickout);
 
+//API V0
+
+app.post('/api/0.1/actors/bacon', routes.api_v0.baconName);
+app.post('/api/0.1/actors/:id/bacon', routes.api_v0.bacon);
+app.post('/api/0.1/actorsandmovies', routes.api_v0.AddActorsToMovie);
+
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

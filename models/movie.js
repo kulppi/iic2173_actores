@@ -13,6 +13,7 @@ var INDEX_NAME = 'nodes';
 var INDEX_KEY = 'type';
 var INDEX_VAL = 'actor';
 var INDEX_VAL_MOVIE = 'movie';
+var BACON_INDEX_NAME = "bacon_movie_name"
 
 var _REL = 'acts';
 
@@ -70,6 +71,17 @@ Movie.prototype._getFollowingRel = function (other, callback) {
 Movie.prototype.save = function (callback) {
     this._node.save(function (err) {
         callback(err);
+    });
+
+    this._node.index(BACON_INDEX_NAME, "name", this.name, function (err) {
+        if (err) return callback(err);
+        callback(null, this);
+    });
+    
+    if(this.provider_id != null)
+    this._node.index(BACON_INDEX_NAME, "provider_id", this.provider_id, function (err) {
+        if (err) return callback(err);
+        callback(null, this);
     });
 };
 
@@ -146,6 +158,13 @@ Movie.get = function (id, callback) {
     });
 };
 
+Movie.getBy = function (property, value, callback) {
+    db.getIndexedNode(BACON_INDEX_NAME, property, value, function (err, node) {
+        if (err) return callback(err);
+        callback(null, new Movie(node));
+    });
+};
+
 Movie.getAll = function (callback) {
     db.getIndexedNodes(INDEX_NAME, INDEX_KEY, INDEX_VAL_MOVIE, function (err, nodes) {
         // if (err) return callback(err);
@@ -169,5 +188,15 @@ Movie.create = function (data, callback) {
             if (err) return callback(err);
             callback(null, movie);
         });
+        node.index(BACON_INDEX_NAME, "name", movie.name, function (err) {
+            if (err) return callback(err);
+            callback(null, movie);
+        });
+        if(movie.provider_id != null)
+        node.index(BACON_INDEX_NAME, "provider_id", movie.provider_id, function (err) {
+            if (err) return callback(err);
+            callback(null, movie);
+        });
     });
+
 };

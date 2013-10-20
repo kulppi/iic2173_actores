@@ -50,7 +50,7 @@ exports.show = function (req, res, next) {
 };
 
 /**
- * GET /actors/:id/bacon
+ * POST /actors/:id/bacon
  */
 exports.bacon = function (req, res, next) {
     Actor.get(req.params.id, function (err, actor) {
