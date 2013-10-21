@@ -70,11 +70,10 @@ actor[end_id] => target actor
 ```bash
 #Post to /api/0.1/actorsandmovies
 
-#content by name
+# params 
 movie[name] => Movie name
 movie[provider_id] => your own movie id, useful to find it later
 
-#content by provider id
 actors => Json array with name and provider
 EX: [{"provider_id":"1", "name":"na_1"}, {"provider_id":"2", "name":"na_2"}]
 ```
