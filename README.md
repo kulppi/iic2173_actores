@@ -65,6 +65,12 @@ actor[end_name] => target actor
 #content by provider id
 actor[initial_id] => intial search actor
 actor[end_id] => target actor
+
+#Example in Python (By Augusto)
+body = {'actor[initial_name]': 'Kevin Bacon', 'actor[end_name]': 'test2'}
+r = requests.post("**Replace with server url**:27017/api/0.1/actors/bacon", data=body)
+print r.content (Here is the result of the request)
+
 ```
 #### Add Actor and movies
 ```bash
@@ -76,9 +82,15 @@ movie[provider_id] => your own movie id, useful to find it later
 
 actors => Json array with name and provider
 EX: [{"provider_id":"1", "name":"na_1"}, {"provider_id":"2", "name":"na_2"}]
+
+#Example in Python (By Augusto)
+actor_list = ['Kevin', 'Jack']
+movie_name= 'La gran estafa 3'
+actors=json.dumps([dict(name=actor) for actor in actor_list])
+body = {'movie[name]': movie_name,'actors': actors}
+r = requests.post("**Replace with server url**:27017/api/0.1/actorsandmovies", data=body)
+print r.content (Here is the result of the request)
 ```
-
-
 
 
 
