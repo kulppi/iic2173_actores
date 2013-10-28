@@ -67,6 +67,7 @@ actor[initial_id] => intial search actor
 actor[end_id] => target actor
 
 #Example in Python (By Augusto)
+import requests
 body = {'actor[initial_name]': 'Kevin Bacon', 'actor[end_name]': 'test2'}
 r = requests.post("**Replace with server url**:27017/api/0.1/actors/bacon", data=body)
 print r.content (Here is the result of the request)
@@ -84,6 +85,8 @@ actors => Json array with name and provider
 EX: [{"provider_id":"1", "name":"na_1"}, {"provider_id":"2", "name":"na_2"}]
 
 #Example in Python (By Augusto)
+import requests
+import json
 actor_list = ['Kevin', 'Jack']
 movie_name= 'La gran estafa 3'
 actors=json.dumps([dict(name=actor) for actor in actor_list])
