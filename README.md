@@ -72,6 +72,12 @@ body = {'actor[initial_name]': 'Kevin Bacon', 'actor[end_name]': 'test2'}
 r = requests.post("**Replace with server url**:27017/api/0.1/actors/bacon", data=body)
 print r.content (Here is the result of the request)
 
+#Example in Rails
+@actor1='Robert Pattinson'
+@actor2='Tom Felton'
+@r = HTTParty.post("**Replace with server url**:27017/api/0.1/actors/bacon", :body=>{'actor[initial_name]'=>@actor1, 'actor[end_name]'=> @actor2})
+@r.body #Here is the result of the request 
+
 ```
 #### Add Actor and movies
 ```bash
